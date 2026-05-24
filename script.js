@@ -57,38 +57,88 @@ const HORARIO_LABEL = {
 /* ========== GEOCODING + AUTOCOMPLETE ========== */
 const COORDS = { origin: null, dest: null };
 
+// Bounding box de Antofagasta: lon_min,lat_min,lon_max,lat_max
+const ANT_BOX = '-70.60,-23.85,-70.10,-23.35';
+const NOM_BASE = 'https://nominatim.openstreetmap.org/search?';
+const NOM_HDR  = { 'User-Agent': 'TransportePrivadoPremium/1.0' };
+
 function debounce(fn, ms) {
   let t;
   return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
 }
 
 async function nominatimSearch(query) {
+  // Limpiar si el usuario ya escribió "antofagasta" al final
+  const clean = query.replace(/,?\s*antofagasta\s*$/i, '').trim();
+  if (clean.length < 2) return [];
+
   try {
-    const q = encodeURIComponent(query + ', Antofagasta, Chile');
-    const url = `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=6&countrycodes=cl&accept-language=es`;
-    const res = await fetch(url, {
-      headers: { 'User-Agent': 'TransportePrivadoPremium/1.0' }
+    // Búsqueda 1: estructurada — street + city (mejor para "Calle 123")
+    const p1 = new URLSearchParams({
+      street: clean, city: 'Antofagasta', countrycodes: 'cl',
+      format: 'json', limit: '5', addressdetails: '1', 'accept-language': 'es'
     });
-    return await res.json();
+
+    // Búsqueda 2: libre dentro del área de Antofagasta
+    const p2 = new URLSearchParams({
+      q: clean + ', Antofagasta', countrycodes: 'cl',
+      format: 'json', limit: '5', addressdetails: '1',
+      viewbox: ANT_BOX, bounded: '1', 'accept-language': 'es'
+    });
+
+    const [r1, r2] = await Promise.allSettled([
+      fetch(NOM_BASE + p1, { headers: NOM_HDR }).then(r => r.json()),
+      fetch(NOM_BASE + p2, { headers: NOM_HDR }).then(r => r.json())
+    ]);
+
+    const res1 = r1.status === 'fulfilled' && Array.isArray(r1.value) ? r1.value : [];
+    const res2 = r2.status === 'fulfilled' && Array.isArray(r2.value) ? r2.value : [];
+
+    // Unir y deduplicar por place_id
+    const seen = new Set();
+    return [...res1, ...res2].filter(r => {
+      if (seen.has(r.place_id)) return false;
+      seen.add(r.place_id);
+      return true;
+    }).slice(0, 6);
   } catch {
     return [];
   }
 }
 
+function buildLabel(r) {
+  const a = r.address || {};
+  // Armar etiqueta limpia: "Calle 123, Sector"
+  let street = '';
+  if (a.road) {
+    street = a.house_number ? `${a.road} ${a.house_number}` : a.road;
+  } else {
+    street = r.display_name.split(',')[0].trim();
+  }
+  const sector = a.suburb || a.neighbourhood || a.city_district || a.quarter || '';
+  return sector ? `${street}, ${sector}` : street;
+}
+
 function renderList(listEl, results, inputEl, coordKey) {
   listEl.innerHTML = '';
-  if (!results.length) return;
-  results.slice(0, 5).forEach(r => {
+  if (!results.length) {
     const li = document.createElement('li');
-    const parts = r.display_name.split(',');
-    li.textContent  = parts.slice(0, 3).join(',').trim();
-    li.title        = r.display_name;
+    li.textContent = 'Sin resultados — intenta ser más específico';
+    li.style.cssText = 'color:rgba(255,255,255,0.3);cursor:default;font-style:italic;';
+    listEl.appendChild(li);
+    return;
+  }
+  results.forEach(r => {
+    const li    = document.createElement('li');
+    const label = buildLabel(r);
+    li.textContent = label;
+    li.title       = r.display_name;
 
     li.addEventListener('mousedown', e => {
       e.preventDefault();
-      inputEl.value       = parts.slice(0, 2).join(',').trim();
-      COORDS[coordKey]    = { lat: parseFloat(r.lat), lon: parseFloat(r.lon) };
-      listEl.innerHTML    = '';
+      inputEl.value    = label;
+      COORDS[coordKey] = { lat: parseFloat(r.lat), lon: parseFloat(r.lon) };
+      listEl.innerHTML = '';
       tryAutoDistance();
     });
     listEl.appendChild(li);
@@ -101,10 +151,10 @@ function setupAutocomplete(inputId, listId, coordKey) {
 
   const doSearch = debounce(async () => {
     const val = input.value.trim();
-    if (val.length < 3) { list.innerHTML = ''; return; }
+    if (val.length < 2) { list.innerHTML = ''; return; }
     const results = await nominatimSearch(val);
     renderList(list, results, input, coordKey);
-  }, 420);
+  }, 400);
 
   input.addEventListener('input', () => {
     COORDS[coordKey] = null;
@@ -113,7 +163,7 @@ function setupAutocomplete(inputId, listId, coordKey) {
   });
 
   input.addEventListener('blur', () => {
-    setTimeout(() => { list.innerHTML = ''; }, 180);
+    setTimeout(() => { list.innerHTML = ''; }, 200);
   });
 }
 
@@ -188,8 +238,16 @@ function calcular() {
     '$' + total.toLocaleString('es-CL');
 
   const metaEl = document.getElementById('est-meta');
-  if (horario === 'madrugada') {
-    metaEl.innerHTML = '<i class="fas fa-user-shield" style="color:#aac0ff;margin-right:6px"></i> Incluye copiloto acompañante obligatorio';
+  if (genero === 'hombre') {
+    metaEl.innerHTML =
+      '<i class="fas fa-male" style="color:#85ff00;margin-right:6px"></i>' +
+      '<strong style="color:#85ff00">Solo Hombres:</strong>' +
+      '&nbsp;Incluye copiloto acompañante obligatorio en todos los horarios.';
+    metaEl.classList.add('visible');
+  } else if (horario === 'madrugada') {
+    metaEl.innerHTML =
+      '<i class="fas fa-user-shield" style="color:#aac0ff;margin-right:6px"></i>' +
+      'Madrugada: copiloto acompañante obligatorio para todos los pasajeros.';
     metaEl.classList.add('visible');
   } else {
     metaEl.classList.remove('visible');
