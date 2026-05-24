@@ -23,11 +23,21 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bg);
+  background:
+    url('./Gemini_Generated_Image_ctq9icctq9icctq9.png') center top / cover fixed no-repeat,
+    var(--bg);
   color: var(--white);
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(2,3,2,0.82);
+  z-index: -1;
+  pointer-events: none;
 }
 
 a { text-decoration: none; color: inherit; }
@@ -287,18 +297,19 @@ img { display: block; max-width: 100%; }
   position: absolute;
   inset: 0;
   background:
-    url('./ChatGPT Image 24 may 2026, 05_08_59 p.m..png') right center / 62% auto no-repeat,
-    radial-gradient(ellipse at 70% 50%, rgba(30,60,10,0.35) 0%, transparent 65%),
+    url('./Gemini_Generated_Image_ctq9icctq9icctq9.png') center center / cover no-repeat,
     #020a02;
+  background-attachment: fixed;
   z-index: 0;
+  image-rendering: high-quality;
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(105deg, rgba(2,3,2,0.97) 38%, rgba(2,3,2,0.5) 60%, rgba(2,3,2,0.1) 80%),
-    linear-gradient(to bottom, rgba(2,3,2,0.3) 0%, rgba(2,3,2,0.6) 100%);
+    linear-gradient(105deg, rgba(2,3,2,0.92) 32%, rgba(2,3,2,0.45) 58%, rgba(2,3,2,0.05) 80%),
+    linear-gradient(to bottom, rgba(2,3,2,0.25) 0%, rgba(2,3,2,0.55) 100%);
   z-index: 1;
 }
 
@@ -1049,7 +1060,7 @@ img { display: block; max-width: 100%; }
   position: absolute;
   inset: 0;
   background:
-    url('./Gemini_Generated_Image_ctq9icctq9icctq9.png') right center / 55% auto no-repeat,
+    url('./ChatGPT Image 24 may 2026, 05_08_59 p.m..png') right center / 58% auto no-repeat,
     linear-gradient(135deg, #020a02, #030f03);
   z-index: 0;
 }
@@ -1167,9 +1178,9 @@ img { display: block; max-width: 100%; }
 
   .hero-bg-img {
     background:
-      url('./ChatGPT Image 24 may 2026, 05_08_59 p.m..png') center bottom / 96% auto no-repeat,
-      radial-gradient(ellipse at 50% 85%, rgba(20,55,5,0.5) 0%, transparent 60%),
+      url('./Gemini_Generated_Image_ctq9icctq9icctq9.png') center center / cover no-repeat,
       #020a02;
+    background-attachment: scroll;
   }
   .hero-overlay {
     background: linear-gradient(
