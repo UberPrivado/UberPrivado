@@ -23,20 +23,24 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background:
-    url('./Gemini_Generated_Image_ctq9icctq9icctq9.png') center top / cover fixed no-repeat,
-    var(--bg);
+  background: var(--bg);
   color: var(--white);
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
-body::before {
-  content: '';
+
+.page-bg {
   position: fixed;
   inset: 0;
-  background: rgba(2,3,2,0.82);
+  z-index: -2;
+  background: url('./Gemini_Generated_Image_ctq9icctq9icctq9.png') center center / cover no-repeat;
+}
+.page-overlay {
+  position: fixed;
+  inset: 0;
   z-index: -1;
+  background: rgba(2,3,2,0.70);
   pointer-events: none;
 }
 
@@ -293,23 +297,12 @@ img { display: block; max-width: 100%; }
   padding-top: 80px;
 }
 
-.hero-bg-img {
-  position: absolute;
-  inset: 0;
-  background:
-    url('./Gemini_Generated_Image_ctq9icctq9icctq9.png') center center / cover no-repeat,
-    #020a02;
-  background-attachment: fixed;
-  z-index: 0;
-  image-rendering: high-quality;
-}
-
 .hero-overlay {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(105deg, rgba(2,3,2,0.92) 32%, rgba(2,3,2,0.45) 58%, rgba(2,3,2,0.05) 80%),
-    linear-gradient(to bottom, rgba(2,3,2,0.25) 0%, rgba(2,3,2,0.55) 100%);
+    linear-gradient(105deg, rgba(2,3,2,0.92) 0%, rgba(2,3,2,0.55) 55%, transparent 80%),
+    linear-gradient(to bottom, transparent 0%, rgba(2,3,2,0.5) 100%);
   z-index: 1;
 }
 
@@ -458,15 +451,6 @@ img { display: block; max-width: 100%; }
   margin: 0 10px;
 }
 
-.hero-right {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.hero-car-img {
-  display: none; /* shown via bg on .hero-bg-img */
-}
 
 /* ========== FEATURE STRIP ========== */
 .feature-strip {
@@ -1059,9 +1043,7 @@ img { display: block; max-width: 100%; }
 .cta-bg {
   position: absolute;
   inset: 0;
-  background:
-    url('./Gemini_Generated_Image_ctq9icctq9icctq9.png') right center / 58% auto no-repeat,
-    linear-gradient(135deg, #020a02, #030f03);
+  background: linear-gradient(135deg, rgba(2,10,2,0.80) 0%, rgba(3,15,3,0.50) 100%);
   z-index: 0;
 }
 .cta-overlay {
@@ -1169,48 +1151,14 @@ img { display: block; max-width: 100%; }
   .cta-title      { font-size: 1.5rem; }
   .footer-inner   { flex-direction: column; text-align: center; }
 
-  /* Hero mobile — auto como fondo igual que escritorio */
-  .hero          { min-height: 100vh; }
-  .hero-inner    { flex-direction: column; padding: 40px 20px 240px; gap: 18px; }
-  .hero-left     { max-width: 100%; }
-  .hero-right    { display: none; }
-  .hero-car-img  { display: none !important; }
+  /* Hero mobile */
+  .hero       { min-height: 100vh; }
+  .hero-inner { flex-direction: column; padding: 40px 20px 60px; gap: 18px; }
+  .hero-left  { max-width: 100%; }
 
-  .hero-bg-img {
-    background:
-      url('./Gemini_Generated_Image_ctq9icctq9icctq9.png') center center / cover no-repeat,
-      #020a02;
-    background-attachment: scroll;
-  }
-  .hero-overlay {
-    background: linear-gradient(
-      to bottom,
-      rgba(2,3,2,0.97) 0%,
-      rgba(2,3,2,0.92) 35%,
-      rgba(2,3,2,0.35) 62%,
-      rgba(2,3,2,0.55) 100%
-    );
-  }
-
-  /* CTA banner mobile — imagen visible */
-  .cta-inner {
-    flex-direction: column;
-    gap: 28px;
-  }
-  .cta-left   { max-width: 100%; }
-  .cta-right  { width: 100%; flex: none; }
-  .cta-car-img {
-    display: block;
-    width: 100%;
-    border-radius: 16px;
-    filter: drop-shadow(0 0 24px rgba(133,255,0,0.45));
-  }
-  .cta-bg {
-    background: linear-gradient(135deg, #020a02, #030f03);
-  }
-  .cta-overlay {
-    background: rgba(2,3,2,0.6);
-  }
+  /* CTA banner mobile */
+  .cta-inner { flex-direction: column; gap: 28px; }
+  .cta-left  { max-width: 100%; }
 }
 
 @media (max-width: 480px) {
