@@ -692,6 +692,16 @@ img { display: block; max-width: 100%; }
 }
 .tarifa-badge i { font-size: .85rem; }
 
+.tarifa-badge--hombre {
+  background: rgba(133,255,0,0.06);
+  border-color: rgba(133,255,0,0.2);
+  color: rgba(180,255,100,0.9);
+}
+
+.tarifa-price-row--hombre {
+  border-color: rgba(133,255,0,0.18);
+}
+
 /* ========== CALCULADORA ========== */
 #calculadora { background: rgba(3,8,3,0.6); }
 
