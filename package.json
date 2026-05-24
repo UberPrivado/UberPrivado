@@ -1,0 +1,13 @@
+{
+  "name": "transporte-privado-premium",
+  "version": "1.0.0",
+  "description": "Landing page premium estilo cyber/neon para servicio de transporte privado en Antofagasta",
+  "author": "Transporte Privado Premium",
+  "license": "UNLICENSED",
+  "private": true,
+  "homepage": ".",
+  "scripts": {
+    "start": "npx serve -s . -l 3000",
+    "dev": "npx serve -s . -l 3000"
+  }
+}
