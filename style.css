@@ -1158,27 +1158,27 @@ img { display: block; max-width: 100%; }
   .cta-title      { font-size: 1.5rem; }
   .footer-inner   { flex-direction: column; text-align: center; }
 
-  /* Hero mobile — imagen visible debajo del texto */
-  .hero-inner {
-    flex-direction: column;
-    padding: 40px 20px 50px;
-    gap: 30px;
-  }
-  .hero-left  { max-width: 100%; }
-  .hero-right { width: 100%; flex: none; }
-  .hero-car-img {
-    display: block;
-    width: 100%;
-    border-radius: 16px;
-    filter: drop-shadow(0 0 28px rgba(133,255,0,0.55));
-  }
+  /* Hero mobile — auto como fondo igual que escritorio */
+  .hero          { min-height: 100vh; }
+  .hero-inner    { flex-direction: column; padding: 40px 20px 240px; gap: 18px; }
+  .hero-left     { max-width: 100%; }
+  .hero-right    { display: none; }
+  .hero-car-img  { display: none !important; }
+
   .hero-bg-img {
     background:
-      radial-gradient(ellipse at 50% 40%, rgba(20,50,5,0.35) 0%, transparent 70%),
+      url('./ChatGPT Image 24 may 2026, 05_08_59 p.m..png') center bottom / 96% auto no-repeat,
+      radial-gradient(ellipse at 50% 85%, rgba(20,55,5,0.5) 0%, transparent 60%),
       #020a02;
   }
   .hero-overlay {
-    background: linear-gradient(to bottom, rgba(2,3,2,0.88) 0%, rgba(2,3,2,0.75) 100%);
+    background: linear-gradient(
+      to bottom,
+      rgba(2,3,2,0.97) 0%,
+      rgba(2,3,2,0.92) 35%,
+      rgba(2,3,2,0.35) 62%,
+      rgba(2,3,2,0.55) 100%
+    );
   }
 
   /* CTA banner mobile — imagen visible */
